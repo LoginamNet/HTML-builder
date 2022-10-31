@@ -6,6 +6,11 @@ const text = fs.createWriteStream(pathToText);
 
 function textInput() {
 
+    process.on('SIGINT', () => {
+        process.stdout.write(`\nВы вышли из режима ввода`);
+        process.exit();
+    })
+
     process.stdout.write(`Введите любой текст: `);
 
     process.stdin.on('data', (data) => {
