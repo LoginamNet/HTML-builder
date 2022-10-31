@@ -11,7 +11,13 @@ async function readFiles() {
     folderItems.forEach(async (item) => {
         const pathToFile = path.join(pathToFolder, item);
         const fileStats = await stat(pathToFile);
-        console.log(pathToFile, fileStats);
+
+        if (fileStats.isFile()) {
+            const fileName = path.basename(pathToFile);
+            const fileExpansion = path.extname(pathToFile);
+            const fileSize = fileStats.size;
+            console.log(`${fileName} - ${fileExpansion} - ${fileSize}kb`);
+        }
     })
 
 }
