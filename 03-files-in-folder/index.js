@@ -13,10 +13,13 @@ async function readFiles() {
         const fileStats = await stat(pathToFile);
 
         if (fileStats.isFile()) {
-            const fileName = path.basename(pathToFile);
-            const fileExpansion = path.extname(pathToFile);
-            const fileSize = fileStats.size;
-            console.log(`${fileName} - ${fileExpansion} - ${fileSize}kb`);
+            const fileExpLength =  path.extname(pathToFile).length;
+            const fileBaseLenth = path.basename(pathToFile).length;
+
+            const fileName = path.basename(pathToFile).slice(0, fileBaseLenth - fileExpLength);
+            const fileExp = path.extname(pathToFile).slice(-fileExpLength + 1);
+            const fileSize = Math.round(fileStats.size / 1024 * 100) / 100;
+            console.log(`${fileName} - ${fileExp} - ${fileSize}kb`);
         }
     })
 
