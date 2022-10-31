@@ -9,7 +9,7 @@ async function readFiles() {
 
         const folderItems = await readdir(pathToFolder);
 
-        console.log(folderItems);
+        console.log(`Имя - расширение - размер`);
     
         folderItems.forEach(async (item) => {
             const pathToFile = path.join(pathToFolder, item);
