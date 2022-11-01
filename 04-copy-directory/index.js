@@ -1,49 +1,61 @@
 const path = require('path');
 const {mkdir, readdir, unlink, stat, copyFile} = require('fs/promises');
 
+async function createFolder(pathToFolder) {
+    try {
+        await mkdir(pathToFolder, { recursive: true });
+    } catch (err) {
+        console.error(err);
+    }
+}
 
+async function clearFolder(pathToFolder) {
+    try {
+        const folderItems = await readdir(pathToFolder);
 
-async function copyFiles() {
+        folderItems.forEach(async (item) => {
+            const pathToFile = path.join(pathToFolder, item);
+
+            await unlink(pathToFile);
+        })
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function copyFiles(pathToSourceFolder, pathToDestFolder) {
+    try {
+        const sourcefolderItems = await readdir(pathToSourceFolder);
+
+        sourcefolderItems.forEach(async (item) => {
+            const pathToSourceFile = path.join(pathToSourceFolder, item);
+            const pathToDestFile = path.join(pathToDestFolder, item);
+            const fileStats = await stat(pathToSourceFile);
+
+            if (fileStats.isFile()) {
+                await copyFile(pathToSourceFile, pathToDestFile);
+                console.log(`Файл ${item} был скопирован`);
+            }
+        })
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function copyFolder() {
     try {
         
-    const pathToInitFolder = path.join(__dirname, 'files');
-    const pathToDestFolder = path.join(__dirname, 'copy-files');
+        const pathToInitFolder = path.join(__dirname, 'files');
+        const pathToDestFolder = path.join(__dirname, 'copy-files');
 
-    await mkdir(pathToDestFolder, { recursive: true });
-
-    const destFolderItems = await readdir(pathToDestFolder);
-
-    destFolderItems.forEach(async (item) => {
-        const pathToDestFile = path.join(pathToDestFolder, item);
-
-        await unlink(pathToDestFile);
-    })
-
-
-    const initFolderItems = await readdir(pathToInitFolder);
-
-    console.log(initFolderItems);
-
-    initFolderItems.forEach(async (item) => {
-
-        const pathToInitFile = path.join(pathToInitFolder, item);
-        const pathToDestFile = path.join(pathToDestFolder, item);
-        const fileStats = await stat(pathToInitFile);
-
-        if (fileStats.isFile()) {
-            console.log(item);
-            await copyFile(pathToInitFile, pathToDestFile);
-        }
-    })
+        createFolder(pathToDestFolder);
+        clearFolder(pathToDestFolder);
+        copyFiles(pathToInitFolder, pathToDestFolder);
 
 
     } catch (err) {
         console.error(err);
     }
-
-
-
-
 }
 
-copyFiles()
+copyFolder();
