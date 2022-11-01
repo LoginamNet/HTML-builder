@@ -1,7 +1,5 @@
 const path = require('path');
 const {writeFile, readFile, appendFile, readdir, stat} = require('fs/promises');
-const { constants } = require('buffer');
-
 
 async function createFile() {
     try {
@@ -34,9 +32,9 @@ async function createBundle() {
             const fileStats = await stat(pathToStyleFile);
             const fileExp = path.extname(pathToStyleFile);
 
-            if(fileStats.isFile() && fileExp === '.css') {
-                console.log(pathToStyleFile);
+            if (fileStats.isFile() && fileExp === '.css') {
                 await readData(pathToStyleFile, pathToBundleFile);
+                console.log(`Стили из файла ${item} были скопированы в файл bundle.css`);
             }
         })
     } catch (err) {
