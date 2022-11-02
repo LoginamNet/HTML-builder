@@ -35,26 +35,12 @@ async function clearFolder(pathToFolder) {
     }
 }
 
-async function createHtmlBundle(pathToHtmlBundleFile, pathToComponentsFolder) {
+async function createHtmlBundle(pathToTemplate, pathToHtmlBundleFile, pathToComponentsFolder) {
     try {
         createFile(pathToHtmlBundleFile);
 
         const componentsfolderItems = await readdir(pathToComponentsFolder);
-        let htmlData = await readFile(path.join(__dirname, 'template.html'), 'utf-8');
-
-        /* componentsfolderItems.forEach(async (item) => {
-
-            const pathToFile = path.join(pathToComponentsFolder, item);
-            const fileExpLength =  path.extname(pathToFile).length;
-            const fileBaseLenth = path.basename(pathToFile).length;
-            const fileName = path.basename(pathToFile).slice(0, fileBaseLenth - fileExpLength);
-            
-            const replacer = await readFile(pathToFile, 'utf-8');
-
-            htmlData = htmlData.replace(`{{${fileName}}}`, replacer);
-            console.log(htmlData)
-            
-        }) */
+        let htmlData = await readFile(pathToTemplate, 'utf-8');
 
         for (let item of componentsfolderItems) {
             const pathToFile = path.join(pathToComponentsFolder, item);
@@ -67,22 +53,8 @@ async function createHtmlBundle(pathToHtmlBundleFile, pathToComponentsFolder) {
             htmlData = htmlData.replace(`{{${fileName}}}`, replacer);
         }
 
-
-
         await writeFile(pathToHtmlBundleFile, htmlData);
-
-
-
-        /* let str = await fs.promises.readFile(path.join(__dirname, 'template.html'), 'utf-8');
-        const component1 = await fs.promises.readFile(path.join(__dirname, 'components', 'header.html'), 'utf-8');
-        str = str.replace(`{{header}}`, component1);
-        const component2 = await fs.promises.readFile(path.join(__dirname, 'components', 'articles.html'), 'utf-8');
-        str = str.replace(`{{articles}}`, component2);
-        const component3 = await fs.promises.readFile(path.join(__dirname, 'components', 'footer.html'), 'utf-8');
-        str = str.replace(`{{footer}}`, component3);
-
-        const writeStr = fs.createWriteStream(path.join(__dirname, 'project-dist', 'index.html'));
-        writeStr.write(str); */
+        console.log('Файл index.html был скомпилирован');
 
     } catch (error) {
         console.log(error.message)
@@ -167,6 +139,7 @@ async function bundleProject() {
 
     const pathToProjectFolder = path.join(__dirname, 'project-dist');
 
+    const pathToTemplate = path.join(__dirname, 'template.html');
     const pathToComponentsFolder = path.join(__dirname, 'components');
     const pathToHtmlBundleFile = path.join(pathToProjectFolder, 'index.html');
 
@@ -181,10 +154,9 @@ async function bundleProject() {
 
     copyAssets(pathToAssetsFolder, pathToCopyAssetsFolder);
     createStylesBundle(pathToStyleBundleFile, pathToStylesFolder);
-    createHtmlBundle(pathToHtmlBundleFile, pathToComponentsFolder);
+    createHtmlBundle(pathToTemplate, pathToHtmlBundleFile, pathToComponentsFolder);
 
-
-
+    
 }
 
 bundleProject();
