@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const {mkdir, readdir, unlink, stat, copyFile, writeFile, readFile, appendFile} = require('fs/promises');
 
@@ -137,25 +136,32 @@ async function copyAssets(pathToInitFolder, pathToDestFolder) {
 
 async function bundleProject() {
 
-    const pathToProjectFolder = path.join(__dirname, 'project-dist');
+    try {
 
-    const pathToTemplate = path.join(__dirname, 'template.html');
-    const pathToComponentsFolder = path.join(__dirname, 'components');
-    const pathToHtmlBundleFile = path.join(pathToProjectFolder, 'index.html');
+        const pathToProjectFolder = path.join(__dirname, 'project-dist');
 
-    const pathToAssetsFolder = path.join(__dirname, 'assets');
-    const pathToCopyAssetsFolder = path.join(pathToProjectFolder, 'assets');
+        const pathToTemplate = path.join(__dirname, 'template.html');
+        const pathToComponentsFolder = path.join(__dirname, 'components');
+        const pathToHtmlBundleFile = path.join(pathToProjectFolder, 'index.html');
 
-    const pathToStylesFolder = path.join(__dirname, 'styles'); 
-    const pathToStyleBundleFile = path.join(pathToProjectFolder, 'style.css');
+        const pathToAssetsFolder = path.join(__dirname, 'assets');
+        const pathToCopyAssetsFolder = path.join(pathToProjectFolder, 'assets');
 
-    createFolder(pathToProjectFolder);
-    await clearFolder(pathToProjectFolder);
+        const pathToStylesFolder = path.join(__dirname, 'styles'); 
+        const pathToStyleBundleFile = path.join(pathToProjectFolder, 'style.css');
 
-    copyAssets(pathToAssetsFolder, pathToCopyAssetsFolder);
-    createStylesBundle(pathToStyleBundleFile, pathToStylesFolder);
-    createHtmlBundle(pathToTemplate, pathToHtmlBundleFile, pathToComponentsFolder);
+        createFolder(pathToProjectFolder);
+        await clearFolder(pathToProjectFolder);
 
+        await copyAssets(pathToAssetsFolder, pathToCopyAssetsFolder);
+        await createStylesBundle(pathToStyleBundleFile, pathToStylesFolder);
+        await createHtmlBundle(pathToTemplate, pathToHtmlBundleFile, pathToComponentsFolder);
+
+        console.log(`\nСборка завершена!`);
+
+    } catch (err) {
+        console.error(err);
+    }
     
 }
 
