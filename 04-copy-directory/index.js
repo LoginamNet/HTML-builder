@@ -46,7 +46,7 @@ async function copyFolder() {
     try {
         
         const pathToInitFolder = path.join(__dirname, 'files');
-        const pathToDestFolder = path.join(__dirname, 'copy-files');
+        const pathToDestFolder = path.join(__dirname, 'files-copy');
 
         createFolder(pathToDestFolder);
         clearFolder(pathToDestFolder);
